@@ -10,32 +10,32 @@ ROBOT_STATE robot_state = ROBOT_IDLE;
 Romi32U4ButtonA buttonA;
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
 }
 
-void loop() 
-{
-  switch(robot_state)
-  {
-    case ROBOT_IDLE:
-      if(buttonA.getSingleDebouncedRelease()) 
-      {
-        chassis.StartDriving(100, 100, 10000); //contains your program that the robot executes when pushbutton A is pressed
-        robot_state = ROBOT_DRIVING;
-      }
-      break;
+void loop() {
+    switch(robot_state) {
+        case ROBOT_IDLE:
+            if(buttonA.getSingleDebouncedRelease())  {
+            chassis.StartDriving(100, 100, 10000); //contains your program that the robot executes when pushbutton A is pressed
+            robot_state = ROBOT_DRIVING;
+            }
+            break;
 
-    case ROBOT_DRIVING:
-      chassis.MotorControl();
-      if(chassis.CheckDriveComplete()) 
-      {
-        chassis.Stop();
-        robot_state = ROBOT_IDLE;
-      }
-      if(buttonA.getSingleDebouncedRelease()) 
-      {
-        chassis.Stop();
-        robot_state = ROBOT_IDLE;
-      }
-  }
+        case ROBOT_DRIVING:
+            chassis.MotorControl();
+            Serial.print("Left: ");
+            Serial.print(chassis.SpeedLeft());
+            Serial.print("\t Right: ");
+            Serial.println(chassis.SpeedRight());
+            if(chassis.CheckDriveComplete()) {
+                chassis.Stop();
+                robot_state = ROBOT_IDLE;
+            }
+            if(buttonA.getSingleDebouncedRelease()) {
+            chassis.Stop();
+            robot_state = ROBOT_IDLE;
+            }
+    }
+    delay(10);
 }
