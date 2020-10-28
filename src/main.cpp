@@ -17,17 +17,13 @@ void loop() {
     switch(robot_state) {
         case ROBOT_IDLE:
             if(buttonA.getSingleDebouncedRelease())  {
-            chassis.StartDriving(100, 100, 10000); //contains your program that the robot executes when pushbutton A is pressed
+            chassis.StartDriving(10, 10, 2000); //contains your program that the robot executes when pushbutton A is pressed
             robot_state = ROBOT_DRIVING;
             }
             break;
 
         case ROBOT_DRIVING:
             chassis.MotorControl();
-            Serial.print("Left: ");
-            Serial.print(chassis.SpeedLeft());
-            Serial.print("\t Right: ");
-            Serial.println(chassis.SpeedRight());
             if(chassis.CheckDriveComplete()) {
                 chassis.Stop();
                 robot_state = ROBOT_IDLE;
@@ -37,5 +33,4 @@ void loop() {
             robot_state = ROBOT_IDLE;
             }
     }
-    delay(10); //delay to prevent VSCode crashing from serial overflow
 }

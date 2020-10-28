@@ -19,6 +19,13 @@ class RomiChassis{
         float E_left = 0; //accumulated errors
         float E_right = 0;
 
+        float left_speed = 0;
+        float right_speed = 0;
+        float error_left = 0;
+        float error_right = 0;
+        float u_left = 0;
+        float u_right = 0;
+
         //encoder and motor objects
         Romi32U4Encoders encoders;
         Romi32U4Motors motors;
@@ -43,7 +50,7 @@ class RomiChassis{
         void UpdateEffortDriveWheelsPI(int a, int b);
 
         void MotorControl(void);
-        void SerialPlotter(float a, float b, float c, float d);
+        void SerialPlotter();
 
         void StartDriving(float, float, uint32_t);
         bool CheckDriveComplete(void);

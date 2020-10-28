@@ -6,8 +6,8 @@ float RomiChassis::SpeedLeft(void) {
     // Assignment 1
     int num_count = count_left - prev_count_left;
     float ang_vel = ((float) num_count) / interval; //angular velocity in counts per millisecond
-    float tan_vel = (ang_vel * C_wheel) / N_wheel * 1000; //tangnetial velocity in mm/s
-    return tan_vel; //[mm/s]
+    left_speed = (ang_vel * C_wheel) / N_wheel * 1000; //tangnetial velocity in mm/s
+    return left_speed; //[mm/s]
 }
 
 float RomiChassis::SpeedRight(void) {
@@ -15,8 +15,8 @@ float RomiChassis::SpeedRight(void) {
     // Assignment 1
     int num_count = count_right - prev_count_right;
     float ang_vel = ((float) num_count) / interval; //angular velocity in counts per millisecond
-    float tan_vel = (ang_vel * C_wheel) / N_wheel * 1000; //tangnetial velocity in mm/s
-    return tan_vel; //[mm/s]
+    right_speed = (ang_vel * C_wheel) / N_wheel * 1000; //tangnetial velocity in mm/s
+    return right_speed; //[mm/s]
 }
 
 void RomiChassis::UpdateEffortDriveWheels(int left, int right) { 
@@ -26,26 +26,30 @@ void RomiChassis::UpdateEffortDriveWheels(int left, int right) {
 void RomiChassis::UpdateEffortDriveWheelsPI(int target_speed_left, int target_speed_right) {
     // !!! ATTENTION !!!
     // Assignment 2
-    float error_left = target_speed_left - SpeedLeft();
-    float error_right = target_speed_right - SpeedRight();
+    error_left = target_speed_left - SpeedLeft();
+    error_right = target_speed_right - SpeedRight();
     E_left += error_left;
     E_right += error_right;
 
-    float u_left = error_left * Kp + E_left * Ki;
-    float u_right = error_right * Kp + E_right * Ki;
+    u_left = error_left * Kp + E_left * Ki;
+    u_right = error_right * Kp + E_right * Ki;
     motors.setEfforts(u_left,u_right);
 }
 
-void RomiChassis::SerialPlotter(float a, float b, float c, float d) {
+void RomiChassis::SerialPlotter() {
     // !!! ATTENTION !!!
     // USE this function for assignment 3!
-    Serial.print(a);
-    Serial.print('\t');
-    Serial.print(b);
-    Serial.print('\t');
-    Serial.print(c);
-    Serial.print('\t');
-    Serial.print(d);
+    Serial.print(left_speed);
+    Serial.print(" |\t");
+    Serial.print(right_speed);
+    Serial.print(" |\t");
+    Serial.print(error_left);
+    Serial.print(" |\t");
+    Serial.print(error_right);
+    Serial.print(" |\t");
+    Serial.print(u_left);
+    Serial.print(" |\t");
+    Serial.print(u_right);
     Serial.println();
 }
 
