@@ -1,5 +1,5 @@
-# RBE_2002-Team_10-Lab_1
+# RBE_2002-Team_10
 
-RBE 2002 - Team 10 - Lab 1: Velocity Control
+RBE 2002 - Team 10
 
 Matthew Haahr, Brian Shin, Nick Hom
