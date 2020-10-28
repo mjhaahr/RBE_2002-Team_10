@@ -37,5 +37,5 @@ void loop() {
             robot_state = ROBOT_IDLE;
             }
     }
-    delay(10);
+    delay(10); //delay to prevent VSCode crashing from serial overflow
 }

@@ -34,7 +34,6 @@ class RomiChassis{
         int prev_count_right = 0;
         float previous_time = 0;
 
-
     public:
         float SpeedLeft(void);
         float SpeedRight(void);

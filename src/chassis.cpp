@@ -26,11 +26,14 @@ void RomiChassis::UpdateEffortDriveWheels(int left, int right) {
 void RomiChassis::UpdateEffortDriveWheelsPI(int target_speed_left, int target_speed_right) {
     // !!! ATTENTION !!!
     // Assignment 2
-    {
-        float u_left = 0;
-        float u_right = 0;
-        motors.setEfforts(u_left,u_right);
-    }
+    float error_left = target_speed_left - SpeedLeft();
+    float error_right = target_speed_right - SpeedRight();
+    E_left += error_left;
+    E_right += error_right;
+
+    float u_left = error_left * Kp + E_left * Ki;
+    float u_right = error_right * Kp + E_right * Ki;
+    motors.setEfforts(u_left,u_right);
 }
 
 void RomiChassis::SerialPlotter(float a, float b, float c, float d) {
@@ -54,7 +57,7 @@ void RomiChassis::MotorControl(void) {
         count_left = encoders.getCountsLeft();
         count_right = encoders.getCountsRight();
         previous_time = millis();
-        UpdateEffortDriveWheels(target_left, target_right);
+        UpdateEffortDriveWheelsPI(target_left, target_right);
         last_update = now;
     }
 }
