@@ -5,6 +5,7 @@ float RomiChassis::SpeedLeft(void)
 {
     // !!! ATTENTION !!!
     // Assignment 1
+    int speed;
     return 0.00; //[mm/s]
 }
 
