@@ -17,8 +17,8 @@ void loop() {
     switch(robot_state) {
         case ROBOT_IDLE:
             if(buttonA.getSingleDebouncedRelease())  {
-            chassis.StartDriving(10, 10, 2000); //contains your program that the robot executes when pushbutton A is pressed
-            robot_state = ROBOT_DRIVING;
+                chassis.StartDriving(10, 10, 2000); //contains your program that the robot executes when pushbutton A is pressed
+                robot_state = ROBOT_DRIVING;
             }
             break;
 
@@ -29,8 +29,8 @@ void loop() {
                 robot_state = ROBOT_IDLE;
             }
             if(buttonA.getSingleDebouncedRelease()) {
-            chassis.Stop();
-            robot_state = ROBOT_IDLE;
+                chassis.Stop();
+                robot_state = ROBOT_IDLE;
             }
     }
 }

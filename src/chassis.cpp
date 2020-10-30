@@ -6,7 +6,7 @@ float RomiChassis::SpeedLeft(void) {
     // Assignment 1
     int num_count = count_left - prev_count_left;
     float ang_vel = ((float) num_count) / interval; //angular velocity in counts per millisecond
-    left_speed = (ang_vel * C_wheel) / N_wheel * 1000; //tangnetial velocity in mm/s
+    left_speed = (ang_vel * C_wheel) / N_wheel * 1000; //tangential velocity in mm/s
     return left_speed; //[mm/s]
 }
 
@@ -15,7 +15,7 @@ float RomiChassis::SpeedRight(void) {
     // Assignment 1
     int num_count = count_right - prev_count_right;
     float ang_vel = ((float) num_count) / interval; //angular velocity in counts per millisecond
-    right_speed = (ang_vel * C_wheel) / N_wheel * 1000; //tangnetial velocity in mm/s
+    right_speed = (ang_vel * C_wheel) / N_wheel * 1000; //tangential velocity in mm/s
     return right_speed; //[mm/s]
 }
 
