@@ -63,6 +63,7 @@ void RomiChassis::MotorControl(void) {
         previous_time = millis();
         UpdateEffortDriveWheelsPI(target_left, target_right);
         last_update = now;
+        // SerialPlotter(); // For plotting PID driving data
     }
 }
 
