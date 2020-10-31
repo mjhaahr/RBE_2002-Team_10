@@ -2,6 +2,6 @@
 4 Seconds: 31mm (undershoot by 9mm from 80mm goal)
 6 Seconds: 57mm (undershoot by 3mm from 60mm goal)
 8 Seconds: 73mm (undershoot by 7mm from 80mm goal)
-10 Seconds: 90mm (undershoot by 10mm from 80mm goal)
+10 Seconds: 100mm (undershoot by 0mm from 80mm goal)
 
 Undershoot is caused by target speed being so low and relying on integral windup
