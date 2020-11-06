@@ -13,5 +13,6 @@ void setup() {
 
 void loop() {
     US.PrintData();
-    delay(10);
+    delay(50);
+    US.loop();
 }
