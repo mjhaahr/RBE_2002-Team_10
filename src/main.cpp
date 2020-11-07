@@ -16,31 +16,29 @@ SpeedController PIcontroller;
 WallFollowingController PDcontroller;
 
 void setup() {
-  PIcontroller.Init();
-  PDcontroller.Init();
+    PIcontroller.Init();
+    PDcontroller.Init();
 }
 
 void loop() {
-  switch(robot_state)
-  {
-    case ROBOT_IDLE:
-      if(buttonA.getSingleDebouncedRelease()) robot_state = ROBOT_DRIVING;
-      break;
+    switch(robot_state) {
+        case ROBOT_IDLE:
+            if(buttonA.getSingleDebouncedRelease()) robot_state = ROBOT_DRIVING;
+            break;
 
-    case ROBOT_DRIVING:
-      //uncomment this line to check whether the speed controller is operational on your robot
-      //PIcontroller.Process(50,50);
+        case ROBOT_DRIVING:
+            //uncomment this line to check whether the speed controller is operational on your robot
+            //PIcontroller.Process(50,50);
 
-      //uncomment this line of code, once you are done with assignments 1 and 2 to demonstrate that your robot
-      //is capable of following a wall autonomously.
-      //int speed = PDcontroller.Start(30); //distance in [cm]
-      //PIcontroller.Start(50+speed,50-speed); //speed in [[mm/s]]
+            //uncomment this line of code, once you are done with assignments 1 and 2 to demonstrate that your robot
+            //is capable of following a wall autonomously.
+            int speed = PDcontroller.Process(30); //distance in [cm]
+            PIcontroller.Process(50+speed,50-speed); //speed in [[mm/s]]
 
-      if(buttonA.getSingleDebouncedRelease()) 
-      {
-        PIcontroller.Stop();
-        robot_state = ROBOT_IDLE;
-      }
-      break;
-  }
+            if(buttonA.getSingleDebouncedRelease()) {
+                PIcontroller.Stop();
+                robot_state = ROBOT_IDLE;
+            }
+            break;
+    }
 }
