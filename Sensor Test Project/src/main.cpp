@@ -12,6 +12,9 @@ void setup() {
 }
 
 void loop() {
-    IR.PrintData();
+    //US.loop();
+    //delay(50);
+    //US.PrintData();
+    IR.PrintData(); 
     delay(50);
 }

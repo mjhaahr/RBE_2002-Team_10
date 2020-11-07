@@ -20,9 +20,8 @@ void SonarSensor::PrintData(void)
 
 float SonarSensor::ReadData(void)
 {
-    //assignment 1.2
-    //read out and calibrate your sonar sensor, to convert readouts to distance in [cm]
-    return pulseTime;
+    float distance = (pulseTime + 34.88) / 56.274;
+    return distance;  //Matthew Equation
 }
 
 void SonarSensor::loop(void) {

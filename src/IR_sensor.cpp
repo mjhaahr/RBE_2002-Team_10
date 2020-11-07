@@ -6,14 +6,15 @@ void IRsensor::Init(void)
     pinMode(pin_IR, INPUT);
 }
 
-float IRsensor::PrintData(void)
+void IRsensor::PrintData(void)
 {
     Serial.println(ReadData());
 }
 
 float IRsensor::ReadData(void)
 {
-  //assignment 1.1
-  //read out and calibrate your IR sensor, to convert readouts to distance in [cm]
-  return 0;
+    unsigned int adc = analogRead(pin_IR);
+    float volts = ((float) adc) * conversionFactor;
+    float distance = (20.248) / (volts - 0.1899); //Matthew Equation
+    return distance;
 }

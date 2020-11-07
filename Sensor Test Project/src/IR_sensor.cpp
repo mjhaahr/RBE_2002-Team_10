@@ -15,5 +15,6 @@ float IRsensor::ReadData(void)
 {
     unsigned int adc = analogRead(pin_IR);
     float volts = ((float) adc) * conversionFactor;
-    return volts;
+    float distance = (20.248) / (volts - 0.1899); //Matthew Equation
+    return distance;
 }
