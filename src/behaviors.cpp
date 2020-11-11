@@ -18,6 +18,7 @@ SpeedController PIcontroller;
 
 void Behaviors::Init(void)
 {
+    Serial.begin(9600);
     LSM6.Init();
     med_x.Init();
     med_y.Init();
@@ -49,18 +50,27 @@ void Behaviors::Run(void)
 {
     switch (robot_state)
     {
-    case IDLE:
-        if(buttonA.getSingleDebouncedRelease()){ //transition condition
-            robot_state = DRIVE; 
-            PIcontroller.Stop(); //action
-        } 
-        else { //transition condition
-            robot_state = IDLE; 
-            PIcontroller.Stop(); //action 
-        }   
-        break;
-        
-        //assignment 3
+        case IDLE:
+            if(buttonA.getSingleDebouncedRelease()){ //transition condition
+                robot_state = DRIVE; 
+                PIcontroller.Stop(); //action
+            } else { //transition condition
+                robot_state = IDLE; 
+                PIcontroller.Stop(); //action 
+            }   
+            break;
+            
+            //assignment 3
+        case DRIVE:
+            if(buttonA.getSingleDebouncedRelease()){ //transition condition
+                robot_state = IDLE; 
+                PIcontroller.Stop(); //action
+            } else { //transition condition
+                robot_state = DRIVE; 
+                PIcontroller.Run(50,0); //action 
+            }   
+            break;
+
     }
     Serial.println(robot_state);
 }

@@ -5,9 +5,9 @@
 Behaviors collisionBehavior;
 
 void setup() {
-  collisionBehavior.Init();
+    collisionBehavior.Init();
 }
 
 void loop() {
-  collisionBehavior.Run();
+    collisionBehavior.Run();
 }
