@@ -38,7 +38,9 @@ boolean Behaviors::DetectCollision(void)
 
 boolean Behaviors::DetectBeingPickedUp(void)
 {
-    //assignment 2
+    if(abs(data[2]) > threshold_pick_up) return 1;
+    else return 0;
+    return false;
 }
 
 void Behaviors::Stop(void)
@@ -60,17 +62,31 @@ void Behaviors::Run(void)
             }   
             break;
             
-            //assignment 3
         case DRIVE:
-            if(buttonA.getSingleDebouncedRelease()){ //transition condition
+            if (DetectCollision()) { //transition condition
+                robot_state = REVERSE; 
+                PIcontroller.Stop(); //action
+            } else if(buttonA.getSingleDebouncedRelease() || DetectBeingPickedUp()){ //transition condition
                 robot_state = IDLE; 
                 PIcontroller.Stop(); //action
-            } else { //transition condition
+            } else {
                 robot_state = DRIVE; 
-                PIcontroller.Run(50,0); //action 
+                PIcontroller.Run(80,80); //action 
             }   
             break;
-
+        case REVERSE:
+            if (PIcontroller.Reverse(50, 10)){//action
+                robot_state = TURN; 
+                PIcontroller.Stop(); //action
+            }
+            break;
+        case TURN:
+            if (PIcontroller.Turn(90, 0)){//action
+                robot_state = DRIVE; 
+                PIcontroller.Stop(); //action
+            }
+            break;
+            break;
     }
     Serial.println(robot_state);
 }

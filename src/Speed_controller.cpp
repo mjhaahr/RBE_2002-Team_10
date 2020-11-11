@@ -46,7 +46,7 @@ boolean SpeedController::Reverse(int target_velocity, int distance) //in mm/s an
 {
     motors.setEfforts(0, 0);
     
-    uint32_t duration = 1000*((distance*10)/(float)target_velocity); //in ms
+    uint32_t duration = 1000*((distance*10)/target_velocity); //in ms
     unsigned long now = millis();
 
     //Serial.print(duration);

@@ -9,7 +9,7 @@ class SpeedController{
         const float Ki = 0.1; 
         float E_left = 0; 
         float E_right = 0;
-        int counts = 0; //assignment 1: convert degrees into counts
+        int counts = 1450; //Matthew's Robot on Foisie Table
 
     public:
         void Init(void);
