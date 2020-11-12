@@ -54,7 +54,7 @@ void Behaviors::Run(void)
     {
         case IDLE:
             if(buttonA.getSingleDebouncedRelease()){ //transition condition
-                robot_state = DRIVE; 
+                robot_state = DATA; 
                 PIcontroller.Stop(); //action
             } else { //transition condition
                 robot_state = IDLE; 
@@ -69,6 +69,7 @@ void Behaviors::Run(void)
             } else if(buttonA.getSingleDebouncedRelease() || DetectBeingPickedUp()){ //transition condition
                 robot_state = IDLE; 
                 PIcontroller.Stop(); //action
+                Serial.println("X Raw\tY Raw\tZ Raw\tX Med\tY Med\tZMed");
             } else {
                 robot_state = DRIVE; 
                 PIcontroller.Run(80,80); //action 
@@ -86,7 +87,30 @@ void Behaviors::Run(void)
                 PIcontroller.Stop(); //action
             }
             break;
+        case DATA:
+            if(buttonA.getSingleDebouncedRelease()){ //transition condition
+                robot_state = IDLE; 
+                PIcontroller.Stop(); //action
+            } else {
+                robot_state = DATA; 
+                PIcontroller.Run(50,50); //action 
+
+                auto data_acc = LSM6.ReadAcceleration(); //IMU Read and data processing
+                data[3] = data_acc.X * 0.061;
+                data[4] = data_acc.Y * 0.061;
+                data[5] = data_acc.Z * 0.061;
+                data[0] = med_x.Filter(data[3]);
+                data[1] = med_y.Filter(data[4]);
+                data[2] = med_z.Filter(data[5]);
+
+                sprintf(report, "%6d %6d %6d %6d %6d %6d", data[3], data[4], data[5], data[0], data[1], data[2]); //data sprintf (scaled raw X, scaled raw Y, scaled raw Z, filtered X, filtered Y, filtered Z)
+                Serial.println(report); 
+                delay(10); //10 ms delay for known time interval
+            }  
             break;
-    }
-    Serial.println(robot_state);
+        default:
+            robot_state = IDLE;
+            PIcontroller.Stop(); //action
+            break;
+    } //removed state print
 }
