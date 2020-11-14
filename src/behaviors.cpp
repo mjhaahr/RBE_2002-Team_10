@@ -93,7 +93,7 @@ void Behaviors::Run(void)
                 PIcontroller.Stop(); //action
             } else {
                 robot_state = DATA; 
-                PIcontroller.Run(50,50); //action 
+                PIcontroller.Run(200,200); //action 
 
                 auto data_acc = LSM6.ReadAcceleration(); //IMU Read and data processing
                 data[3] = data_acc.X * 0.061;
@@ -105,7 +105,7 @@ void Behaviors::Run(void)
 
                 sprintf(report, "%6d %6d %6d %6d %6d %6d", data[3], data[4], data[5], data[0], data[1], data[2]); //data sprintf (scaled raw X, scaled raw Y, scaled raw Z, filtered X, filtered Y, filtered Z)
                 Serial.println(report); 
-                delay(10); //10 ms delay for known time interval
+                delay(5); //10 ms delay for known time interval
             }  
             break;
         default:
