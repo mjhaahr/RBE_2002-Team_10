@@ -5,8 +5,8 @@
 
 class Behaviors{
     private:
-        int threshold = 400;
-        int threshold_pick_up = 1600;
+        const int threshold = 300; //300 for 50, 300 for 100, 400 for 150, 400 for 200
+        const int threshold_pick_up = 1700;
         int data[6] = {0}; //first 3 are for filtered, last 3 are for raw, but converted
         enum ROBOT_STATE {IDLE, DRIVE, REVERSE, TURN, DATA};
         ROBOT_STATE robot_state = IDLE; //initial state: IDLE

@@ -32,14 +32,23 @@ boolean Behaviors::DetectCollision(void)
     data[0] = med_x.Filter(data_acc.X)*0.061;
     data[1] = med_y.Filter(data_acc.Y)*0.061;
     data[2] = med_z.Filter(data_acc.Z)*0.061;
-    if((abs(data[0]) > threshold) || (abs(data[1]) > threshold)) return 1;
+    if((abs(data[0]) > threshold) || (abs(data[1]) > threshold)){ //manual setting as the const int is being redifined, no clue why
+        Serial.print("Collision: \t");
+        Serial.print(data[0]);
+        Serial.print('\t');
+        Serial.println(data[1]);
+        return 1;
+    } 
     else return 0;
 }
 
 boolean Behaviors::DetectBeingPickedUp(void)
 {
-    if(abs(data[2]) > threshold_pick_up) return 1;
-    else return 0;
+    if(abs(data[2]) > threshold_pick_up) {
+        Serial.print("Picked up: \t");
+        Serial.println(data[2]);
+        return 1; //manual setting as the const int is being redifined, no clue why
+    } else return 0;
     return false;
 }
 
@@ -54,7 +63,7 @@ void Behaviors::Run(void)
     {
         case IDLE:
             if(buttonA.getSingleDebouncedRelease()){ //transition condition
-                robot_state = DATA; 
+                robot_state = DRIVE; 
                 PIcontroller.Stop(); //action
             } else { //transition condition
                 robot_state = IDLE; 
@@ -69,15 +78,14 @@ void Behaviors::Run(void)
             } else if(buttonA.getSingleDebouncedRelease() || DetectBeingPickedUp()){ //transition condition
                 robot_state = IDLE; 
                 PIcontroller.Stop(); //action
-                Serial.println("X Raw\tY Raw\tZ Raw\tX Med\tY Med\tZMed");
             } else {
                 robot_state = DRIVE; 
-                PIcontroller.Run(80,80); //action 
+                PIcontroller.Run(50,50); //action 
             }   
             break;
         case REVERSE:
             if (PIcontroller.Reverse(50, 10)){//action
-                robot_state = TURN; 
+                robot_state = TURN; //for collision testing
                 PIcontroller.Stop(); //action
             }
             break;
@@ -93,7 +101,7 @@ void Behaviors::Run(void)
                 PIcontroller.Stop(); //action
             } else {
                 robot_state = DATA; 
-                PIcontroller.Run(200,200); //action 
+                PIcontroller.Run(50,50); //action 
 
                 auto data_acc = LSM6.ReadAcceleration(); //IMU Read and data processing
                 data[3] = data_acc.X * 0.061;
@@ -105,12 +113,13 @@ void Behaviors::Run(void)
 
                 sprintf(report, "%6d %6d %6d %6d %6d %6d", data[3], data[4], data[5], data[0], data[1], data[2]); //data sprintf (scaled raw X, scaled raw Y, scaled raw Z, filtered X, filtered Y, filtered Z)
                 Serial.println(report); 
-                delay(5); //10 ms delay for known time interval
+                delay(5); //5 ms delay for known time interval
             }  
             break;
         default:
             robot_state = IDLE;
             PIcontroller.Stop(); //action
             break;
-    } //removed state print
+    }
+    Serial.println(robot_state);
 }
