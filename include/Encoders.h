@@ -16,7 +16,7 @@ class Encoder{
         int ReadEncoderCountRight(void);
         float ReadVelocityLeft(void); 
         float ReadVelocityRight(void); 
-        float PrintVelocities(void);
+        void PrintVelocities(void);
         boolean UpdateEncoderCounts(void);
 };
 

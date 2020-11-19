@@ -46,7 +46,7 @@ void Position::UpdatePose(float target_speed_left, float target_speed_right)
     {
     	//Unit conversion (mm/s to m/s)
 		vL = target_speed_left * 1000;
-		vR = target_Speed_Right * 1000;
+		vR = target_speed_right * 1000;
     	
         //Velocities added
 		rPlusL = vR + vL;
@@ -59,7 +59,7 @@ void Position::UpdatePose(float target_speed_left, float target_speed_right)
 		if (target_speed_left == target_speed_right){ //Drive Straight
 			xDelta = V * cos(theta) * deltaT / 1000;
 			yDelta = V * sin(theta) * deltaT / 1000;
-			thetaDelta = 0//No update to theta
+			thetaDelta = 0; //No update to theta
 		} else if (target_speed_left == -target_speed_right){ //Point turn, Easy enough to seperate
 			xDelta = 0;
 			yDelta = 0;

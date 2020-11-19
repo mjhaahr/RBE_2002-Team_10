@@ -15,7 +15,7 @@ void Encoder::Init(void)
     //nothing to initialize, however, good practice to have a init function anyway
 }
 
-float Encoder::PrintVelocities(void)
+void Encoder::PrintVelocities(void)
 {
     Serial.print("Velocity of left wheel: ");
     Serial.print(ReadVelocityLeft());
