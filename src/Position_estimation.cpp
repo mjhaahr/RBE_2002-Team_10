@@ -45,8 +45,8 @@ void Position::UpdatePose(float target_speed_left, float target_speed_right)
     if(time_now - time_prev >= deltaT) //update every 50ms for practical reasons
     {
     	//Unit conversion (mm/s to m/s)
-		vL = target_speed_left * 1000;
-		vR = target_speed_right * 1000;
+		vL = RomiEncoders.ReadVelocityLeft() / 1000;
+		vR = RomiEncoders.ReadVelocityRight() / 1000;
     	
         //Velocities added
 		rPlusL = vR + vL;
@@ -56,12 +56,13 @@ void Position::UpdatePose(float target_speed_left, float target_speed_right)
         w = rMinusL / l;
         V = rPlusL / 2;
 
-		if (target_speed_left == target_speed_right){ //Drive Straight
+		if ((target_speed_left == target_speed_right) || (abs(rMinusL) <= eqThreshold)){ //Drive Straight with tolerance
 			xDelta = V * cos(theta) * deltaT / 1000;
 			yDelta = V * sin(theta) * deltaT / 1000;
 			thetaDelta = 0; //No update to theta
-		} else if (target_speed_left == -target_speed_right){ //Point turn, Easy enough to seperate
-			xDelta = 0;
+		
+		} else if ((target_speed_left == -target_speed_right) || (abs(rPlusL) <= eqThreshold)){ //Point turn, Easy enough to seperate
+            xDelta = 0;
 			yDelta = 0;
 			thetaDelta = w * deltaT / 1000; //duration in seconds
 		} else { //Curved path
