@@ -13,7 +13,7 @@ class Position{
         const float eqThreshold = 0.0002; //0.2 mm/s tolerance
         unsigned long time_prev, time_now;
         const float l = 0.142875; //wheel track in meters (updated to match actual device)
-        const float l2 = l / 2; //half wheel track
+        const float l2 = l / 2.0; //half wheel track
         const float deltaT = 50; //time interval
         
     public:

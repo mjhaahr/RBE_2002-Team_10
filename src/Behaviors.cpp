@@ -37,9 +37,7 @@ void Behaviors::Run(void)
     case DRIVE:
         robot_state = DRIVE;
         //assignment
-        robot.Straight(50,10);
-        robot.Turn(180,0);
-        robot.Straight(50,10);
+        robot.Curved(120,150,30);
         robot.Stop(); 
         robot_state = IDLE;
         break;
