@@ -73,6 +73,7 @@ void Position::UpdatePose(float target_speed_left, float target_speed_right)
         x += xDelta;
         y += yDelta;
 		theta += thetaDelta;
+		PrintPose(); //print after update (every 50 ms)
     }
 }
 
