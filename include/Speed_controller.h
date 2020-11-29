@@ -13,7 +13,7 @@ class SpeedController{
         float error_distance = 0;
 		float maxAccel = 20.0; //mm/2^2
 		float deltaV = maxAccel * 0.050; //change in velocity from maxAccel and encoder update rate
-		int constrainAccel(int); //acceleration constrain
+		int constrainAcell(int); //acceleration constrain
     public:
         struct constrained_acceleration {
             float constrained_velocity_left;

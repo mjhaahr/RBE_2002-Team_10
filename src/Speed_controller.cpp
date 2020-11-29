@@ -66,7 +66,7 @@ boolean SpeedController::Straight(int target_velocity, int time){
     return 1;
 }
 
-boolean SpeedController::Curved(int target_velocity_left, int target_velocity_right, int time) //in mm/s and s{
+boolean SpeedController::Curved(int target_velocity_left, int target_velocity_right, int time){ //in mm/s and s
     motors.setEfforts(0, 0);
     unsigned long now = millis();
 
@@ -83,10 +83,10 @@ void SpeedController::Stop(){
     time_track = 0;
 }
 
-int constrainAceel(int targetSpeed){
+int SpeedController::constrainAcell(int targetSpeed){
 	float currSpeed = (MagneticEncoder.ReadVelocityLeft() + MagneticEncoder.ReadVelocityRight()) / 2; //can just read one, they should basically be the same value
 	int decVel = (int) (currSpeed + deltaV); //how much it can increase in speed by
 	int incVel = (int) (currSpeed - deltaV); //how much it can decrease in speed by
-	int vOut = constrain(targetSpeed, decVal, incVel);
+	int vOut = constrain(targetSpeed, decVel, incVel);
 	return vOut;
 }
