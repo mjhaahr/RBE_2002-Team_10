@@ -39,21 +39,22 @@ void Behaviors::Run(void)
             robot.Stop();             
         } 
         else {
+            /*Serial.println("start");
+            robot.MoveToPosition(0.610,0.610); //approx 1 ft
+            Serial.println("end");*/
             Serial.println("start");
-            robot.MoveToPosition(0.5,0.5);
-            Serial.println("end");
-            Serial.println("start");
-            /*
+            
             for(int i = 0; i < 5; i++){
                 Serial.print("Pos: ");
                 Serial.println(i);
 
                 robot.MoveToPosition(positions[i][0],positions[i][1]);
+                delay(1000);
 
                 Serial.print("Pos: ");
                 Serial.println(i);
             }
-            */
+            
             Serial.println("end");
             robot_state = IDLE;
         }

@@ -10,7 +10,7 @@ class Position{
         const float l = 0.142875; //distance from wheel-to-wheel in m
         
     public:
-        struct pose_data {
+        struct pose_data{
             float X;
             float Y;
             float THETA;

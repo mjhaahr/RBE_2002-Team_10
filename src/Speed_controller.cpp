@@ -1,7 +1,8 @@
 #include <Romi32U4.h>
 #include "Encoders.h"
-#include  "Speed_controller.h"
+#include "Speed_controller.h"
 #include "Position_estimation.h"
+
 
 Romi32U4Motors motors;
 Encoder MagneticEncoder; 
@@ -32,13 +33,57 @@ void SpeedController::Run(float target_velocity_left, float target_velocity_righ
 }
 
 boolean SpeedController::MoveToPosition(float target_x, float target_y){
-    do
-    {    
-        //assignment
+    E_dist = 0;
+    E_theta = 0;
+    theta_last = 0;
+    //initial turn to position
+    currentPos = odometry.ReadPose(); 
+    float yError = target_y - currentPos.Y;
+    float xError = target_x - currentPos.X;
+    float turnAngle = atan((yError) / (xError)) - currentPos.THETA;
+    int turnDeg = (int) (turnAngle * 180 / PI);
+    if (xError < 0){
+        turnDeg += 180;
+    }
+    Turn(turnDeg, 1);
 
+    do {
+        currentPos = odometry.ReadPose();
+        error_distance = sqrt(pow((target_x - currentPos.X), 2) + pow((target_y - currentPos.Y), 2));
+        error_theta = atan((target_y - currentPos.Y) / (target_x - currentPos.X)) - currentPos.THETA;
+        E_dist += error_distance;
+        E_theta += error_theta;
+        Serial.print(error_distance);
+        Serial.print('\t');
+        Serial.print(error_theta);
+        Serial.print('\t');
+        Serial.print('\t');
 
+        T_diff = error_theta - theta_last;
+
+        float speedRight = KpD * error_distance + KiD * E_dist + KpT * error_theta + KiT * E_theta + KdT * T_diff;
+        float speedLeft = KpD * error_distance  + KiD * E_dist - KpT * error_theta - KiT * E_theta - KdT * T_diff;
+
+        theta_last = error_theta;
         
-    } while (error_distance >= 0.00); //define a distance criteria that lets the robot know that it reached the waypoint.
+        Serial.print(speedLeft);
+        Serial.print('\t');/*
+        Serial.print(speedLeft);
+        Serial.print('\t');
+        Serial.print('\t');
+        
+        speedRight = constrainAccel(speedRight);
+        speedLeft = constrainAccel(speedLeft);
+
+        Serial.print(speedRight);
+        Serial.print('\t');
+        */
+       Serial.println(speedRight);
+       Run(speedLeft, speedRight);
+    
+    } while (error_distance >= distanceTolerance); //define a distance criteria that lets the robot know that it reached the waypoint.
+    motors.setEfforts(0, 0);
+    Turn(turnDeg, 0);
     return 1;
 }
 
@@ -83,10 +128,10 @@ void SpeedController::Stop(){
     time_track = 0;
 }
 
-int SpeedController::constrainAcell(int targetSpeed){
-	float currSpeed = (MagneticEncoder.ReadVelocityLeft() + MagneticEncoder.ReadVelocityRight()) / 2; //can just read one, they should basically be the same value
-	int decVel = (int) (currSpeed + deltaV); //how much it can increase in speed by
-	int incVel = (int) (currSpeed - deltaV); //how much it can decrease in speed by
-	int vOut = constrain(targetSpeed, decVel, incVel);
+float SpeedController::constrainAccel(float targetSpeed){
+	float currVel = (MagneticEncoder.ReadVelocityLeft() + MagneticEncoder.ReadVelocityRight()) / 2; //can just read one, they should basically be the same value
+    float decVel = currVel + deltaV; //how much it can increase in speed by
+	float incVel = currVel - deltaV; //how much it can decrease in speed by
+	float vOut = (currVel > incVel) ? (incVel) : ((currVel < decVel) ? (decVel) : (currVel));
 	return vOut;
 }
