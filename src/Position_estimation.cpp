@@ -39,32 +39,40 @@ void Position::PrintPose(void)
     Serial.println(theta);
 }
 
-void Position::UpdatePose(float target_velocity_left, float target_velocity_right)
+void Position::UpdatePose(float target_speed_left, float target_speed_right) //better odometry code
 {
     time_now = millis();
-    if(time_now - time_prev >= 50) //update every 50ms for practical reasons
+    if(time_now - time_prev >= deltaT) //update every 50ms for practical reasons
     {
-        float d_time = (time_now - time_prev)/1000.0; //convert to s
-        float velocity_left = RomiEncoders.ReadVelocityLeft()/1000.0; //in m/s
-        float velocity_right = RomiEncoders.ReadVelocityRight()/1000.0; //in m/s
-        float velocity = (velocity_left + velocity_right)/2.0; //in m/s
+    	//Unit conversion (mm/s to m/s)
+		vL = RomiEncoders.ReadVelocityLeft() / 1000;
+		vR = RomiEncoders.ReadVelocityRight() / 1000;
+    	
+        //Velocities added
+		rPlusL = vR + vL;
+		rMinusL = vR - vL;
 
-        float w = (velocity_right - velocity_left)/(float)l;
-        float R = (l/2.0)*(velocity_right + velocity_left)/(float)(velocity_right - velocity_left);
-        float d_theta = w*d_time;
+        R = l2 * rPlusL / rMinusL;
+        w = rMinusL / l;
+        V = rPlusL / 2;
 
-        if(velocity_left == velocity_right) //straight movement
-        {
-            x = x + velocity*cos(theta)*d_time;
-            y = y + velocity*sin(theta)*d_time;
-            theta = theta + d_theta; 
-        }
-        else //curved movement or point turn
-        {    
-            x = x - R*sin(theta) + R*sin(theta + d_theta);
-            y = y + R*cos(theta) - R*cos(theta + d_theta);
-            theta = theta + d_theta;
-        }
-        time_prev = time_now;
+		if ((target_speed_left == target_speed_right) || (abs(rMinusL) <= eqThreshold)){ //Drive Straight with tolerance
+			xDelta = V * cos(theta) * deltaT / 1000;
+			yDelta = V * sin(theta) * deltaT / 1000;
+			thetaDelta = 0; //No update to theta
+		
+		} else if ((target_speed_left == -target_speed_right) || (abs(rPlusL) <= eqThreshold)){ //Point turn, Easy enough to seperate
+            xDelta = 0;
+			yDelta = 0;
+			thetaDelta = w * deltaT / 1000; //duration in seconds
+		} else { //Curved path
+			thetaDelta = w * deltaT / 1000;
+			xDelta = (R * sin(theta + thetaDelta)) -(R * sin(theta));
+			yDelta = (R * cos(theta)) - (R * cos(theta + thetaDelta));
+		}
+
+        x += xDelta;
+        y += yDelta;
+		theta += thetaDelta;
     }
 }

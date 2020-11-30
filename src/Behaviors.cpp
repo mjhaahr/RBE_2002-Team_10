@@ -49,10 +49,10 @@ void Behaviors::Run(void)
                 Serial.println(i);
 
                 robot.MoveToPosition(positions[i][0],positions[i][1]);
-                delay(1000);
+                delay(2000);
 
                 Serial.print("Pos: ");
-                Serial.println(i);
+                Serial.println(i + 1);
             }
             
             Serial.println("end");

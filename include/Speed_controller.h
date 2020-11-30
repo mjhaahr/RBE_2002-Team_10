@@ -28,6 +28,9 @@ class SpeedController{
         float E_theta = 0;
         float theta_last = 0;
         float T_diff = 0;
+
+        int totalAngle = 0;
+
         Position::pose_data currentPos;
 
     public:
@@ -38,7 +41,7 @@ class SpeedController{
         };
         void Init(void);
         void Run(float, float); 
-        boolean Turn(int,int); //degrees, direction of rotation: 0->left, 1->right
+        boolean Turn(float,int); //degrees, direction of rotation: 0->left, 1->right
         boolean Straight(int, int); //speed, duration
         boolean Curved(int,int,int); //speed left, speed right, duration
         boolean MoveToPosition(float,float); //target_x, target_y

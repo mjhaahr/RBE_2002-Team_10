@@ -33,7 +33,7 @@ void SpeedController::Run(float target_velocity_left, float target_velocity_righ
 }
 
 boolean SpeedController::MoveToPosition(float target_x, float target_y){
-    E_dist = 0;
+    /*E_dist = 0;
     E_theta = 0;
     theta_last = 0;
     //initial turn to position
@@ -67,7 +67,7 @@ boolean SpeedController::MoveToPosition(float target_x, float target_y){
         theta_last = error_theta;
         
         Serial.print(speedLeft);
-        Serial.print('\t');/*
+        Serial.print('\t');
         Serial.print(speedLeft);
         Serial.print('\t');
         Serial.print('\t');
@@ -77,25 +77,69 @@ boolean SpeedController::MoveToPosition(float target_x, float target_y){
 
         Serial.print(speedRight);
         Serial.print('\t');
-        */
+        
        Serial.println(speedRight);
        Run(speedLeft, speedRight);
     
     } while (error_distance >= distanceTolerance); //define a distance criteria that lets the robot know that it reached the waypoint.
     motors.setEfforts(0, 0);
-    Turn(turnDeg, 0);
+    Turn(turnDeg, 0);*/
+
+    //initial turn to position
+    currentPos = odometry.ReadPose(); 
+    float yError = target_y - currentPos.Y;
+    float xError = target_x - currentPos.X;
+    float offset = 0;
+    if (xError < 0){
+        offset = PI;
+    }
+    float turnAngle = atan((yError) / (xError)) - offset - currentPos.THETA;
+    int turnDeg = (int) (turnAngle * 180 / PI);
+    Serial.print("Turn Amount: \t");
+    Serial.print(turnDeg);
+    Serial.print('\t');
+    Serial.println(turnAngle);
+    Serial.print("Total Angle: \t");
+    totalAngle += turnDeg;
+    Serial.println(totalAngle);
+
+    if (turnAngle < 0){
+        Turn(abs(turnAngle), 0);
+    } else{
+        Turn(turnAngle, 1);
+    }
+    currentPos = odometry.ReadPose(); 
+    Serial.print("Current: \t");
+    Serial.print(currentPos.THETA);
+    Serial.print('\t');
+    Serial.println(currentPos.THETA * 180 / PI);
+
     return 1;
 }
 
-boolean SpeedController::Turn(int degree, int direction){
+boolean SpeedController::Turn(float radians, int direction){ //turn now operatres using Odometry, rather than internally checking counts
     motors.setEfforts(0, 0);
-    int turns = counts*(degree/180.0);
-    int count_turn = MagneticEncoder.ReadEncoderCountLeft();
+    currentPos = odometry.ReadPose(); 
+    float target;
 
-    while(abs(abs(count_turn) - abs(MagneticEncoder.ReadEncoderCountLeft())) <= turns){
-        if(!direction) Run(50,-50);
-        else Run(-50,50);
+    if(direction){
+        target =  currentPos.THETA + radians;
+    } else{
+        target =  currentPos.THETA - radians;
     }
+
+    if(direction){
+        do {
+            Run(-50,50);
+            currentPos = odometry.ReadPose(); 
+        } while(target > currentPos.THETA);
+    } else{
+        do {
+            Run(50,-50);
+            currentPos = odometry.ReadPose(); 
+        } while(target < currentPos.THETA);
+    }
+
     motors.setEfforts(0, 0);
     return 1;
 }
