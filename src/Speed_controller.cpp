@@ -68,16 +68,7 @@ boolean SpeedController::MoveToPosition(float target_x, float target_y){
 
 
     /*
-    //initial turn to position
-    currentPos = odometry.ReadPose(); 
-    float yError = target_y - currentPos.Y;
-    float xError = target_x - currentPos.X;
-    float turnAngle = atan((yError) / (xError)) - currentPos.THETA;
-    int turnDeg = (int) (turnAngle * 180 / PI);
-    if (xError < 0){
-        turnDeg += 180;
-    }
-    Turn(turnDeg, 1);
+    
 
     do {
         currentPos = odometry.ReadPose();
@@ -146,6 +137,28 @@ boolean SpeedController::Turn(float radians, int direction){ //turn now operatre
     return 1;
 }
 
+boolean SpeedController::StraightConstrained(int target_velocity, int time){
+    motors.setEfforts(0, 0);
+    unsigned long now = millis();
+
+    //Accel
+    while ((unsigned long)(millis() - now) <= time*1000){
+        int tagVel = constrainAccel(target_velocity);
+        if (tagVel < 30){ //Force out of Deadband
+            tagVel = 30;
+        }
+        Serial.println(tagVel);
+        Run(tagVel,tagVel);
+    }
+    //Deccel
+    while ((MagneticEncoder.ReadVelocityLeft() > 0.5) || (MagneticEncoder.ReadVelocityRight() > 0.5)){ //0.5mm/s tolerance
+        int tagVel = constrainAccel(0);
+        Run(tagVel,tagVel);
+    }
+    motors.setEfforts(0, 0);
+    return 1;
+}
+
 boolean SpeedController::Straight(int target_velocity, int time){
     motors.setEfforts(0, 0);
     unsigned long now = millis();
@@ -174,10 +187,9 @@ void SpeedController::Stop(){
     time_track = 0;
 }
 
-float SpeedController::constrainAccel(float targetSpeed){
-	float currVel = (MagneticEncoder.ReadVelocityLeft() + MagneticEncoder.ReadVelocityRight()) / 2; //can just read one, they should basically be the same value
-    float decVel = currVel + deltaV; //how much it can increase in speed by
-	float incVel = currVel - deltaV; //how much it can decrease in speed by
-	float vOut = (currVel > incVel) ? (incVel) : ((currVel < decVel) ? (decVel) : (currVel));
-	return vOut;
+int SpeedController::constrainAccel(int targetSpeed){
+	int currVel = MagneticEncoder.ReadVelocityLeft(); //+ MagneticEncoder.ReadVelocityRight()) / 2; //can just read one, they should basically be the same value
+    int decVel = currVel - deltaV; //how much it can increase in speed by
+	int incVel = currVel + deltaV; //how much it can decrease in speed by
+	return (targetSpeed > incVel) ? (incVel) : ((targetSpeed < decVel) ? (decVel) : (targetSpeed));
 }
