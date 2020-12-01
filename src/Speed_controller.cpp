@@ -35,13 +35,15 @@ void SpeedController::Run(float target_velocity_left, float target_velocity_righ
 boolean SpeedController::MoveToPosition(float target_x, float target_y){
     //Reset integrals
     E_dist = 0;
+    dist_last = 0;
+
     E_theta = 0;
     theta_last = 0;
     //initial turn to position
     currentPos = odometry.ReadPose(); 
-    float yError = target_y - currentPos.Y;
-    float xError = target_x - currentPos.X;
-    float offset = 0;
+    yError = target_y - currentPos.Y;
+    xError = target_x - currentPos.X;
+    offset = 0;
     if (xError < 0){
         offset = PI;
     }
@@ -66,14 +68,15 @@ boolean SpeedController::MoveToPosition(float target_x, float target_y){
     Serial.print('\t');
     Serial.println(currentPos.THETA * 180 / PI);
 
-
-    /*
-    
-
     do {
         currentPos = odometry.ReadPose();
-        error_distance = sqrt(pow((target_x - currentPos.X), 2) + pow((target_y - currentPos.Y), 2));
-        error_theta = atan((target_y - currentPos.Y) / (target_x - currentPos.X)) - currentPos.THETA;
+        yError = target_y - currentPos.Y;
+        xError = target_x - currentPos.X;
+        if (xError < 0){
+            offset = PI;
+        }
+        error_distance = sqrt(pow((xError), 2) + pow((yError), 2));
+        error_theta = fmod((atan((yError) / (xError)) - offset - currentPos.THETA), (2 * PI));
         E_dist += error_distance;
         E_theta += error_theta;
         Serial.print(error_distance);
@@ -84,29 +87,26 @@ boolean SpeedController::MoveToPosition(float target_x, float target_y){
 
         T_diff = error_theta - theta_last;
 
-        float speedRight = KpD * error_distance + KiD * E_dist + KpT * error_theta + KiT * E_theta + KdT * T_diff;
-        float speedLeft = KpD * error_distance  + KiD * E_dist - KpT * error_theta - KiT * E_theta - KdT * T_diff;
+        dist_diff = error_distance - dist_last;
+
+        float speed = KpD * error_distance  + KiD * E_dist + KdD * dist_diff;
+        
+        speed = constrain(speed, -50, 50); //cap max speed to prevent large integral wind up
+
+        float speedLeft = speed - KpT * error_theta - KiT * E_theta - KdT * T_diff; //angular speed control
+        float speedRight = speed + KpT * error_theta + KiT * E_theta + KdT * T_diff;
 
         theta_last = error_theta;
+        dist_last = error_distance;
         
         Serial.print(speedLeft);
         Serial.print('\t');
-        Serial.print(speedLeft);
-        Serial.print('\t');
-        Serial.print('\t');
-        
-        speedRight = constrainAccel(speedRight);
-        speedLeft = constrainAccel(speedLeft);
+        Serial.println(speedRight);
 
-        Serial.print(speedRight);
-        Serial.print('\t');
-        
-       Serial.println(speedRight);
-       Run(speedLeft, speedRight);
+        Run(speedLeft, speedRight);
     
     } while (error_distance >= distanceTolerance); //define a distance criteria that lets the robot know that it reached the waypoint.
     motors.setEfforts(0, 0);
-    Turn(turnDeg, 0);*/
     return 1;
 }
 

@@ -16,18 +16,25 @@ class SpeedController{
 		const float maxAccel = 200.0; //mm/2^2
 		const float deltaV = maxAccel * 0.060; //change in velocity from maxAccel and encoder update rate (should be 50 ms, but due to how slow some code is, is longer in actual fact)
 		int constrainAccel(int); //acceleration constrain
-        const float distanceTolerance = 0.02; //10 mm error tolerance
+        const float distanceTolerance = 0.01; //10 mm error tolerance
 
-        const float KpD = 0.5;
+        const float KpD = 2;
         const float KpT = 11;
         const float KiD = 0.01; 
         const float KiT = 0.000; 
-        const float KdD = 0.0;
+        const float KdD = 0.01;
         const float KdT = 3;
         float E_dist = 0;
+        float dist_last = 0;
+        float dist_diff = 0;
+
         float E_theta = 0;
         float theta_last = 0;
         float T_diff = 0;
+
+        float yError = 0;
+        float xError = 0;
+        float offset = 0;
 
         int totalAngle = 0;
 
