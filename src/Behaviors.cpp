@@ -1,6 +1,6 @@
 #include <Romi32U4.h>
 #include "Behaviors.h"
-#include "Speed_controller.h" //will need some remaking
+#include "Speed_controller.h"
 
 //sensors
 Romi32U4ButtonA buttonA;
@@ -38,14 +38,48 @@ void Behaviors::Run(void)
         if(buttonA.getSingleDebouncedRelease()){
             robot_state = IDLE; 
             robot.Stop();             
-        } else if(){
-        	robot_state = IDLE; 
+        } else if(true){ //Collision
+        	robot_state = WAITFORBUTTON; 
             robot.Stop();
         } else {
-        	robot.StraightConstrained(200); //drives straight and constrained
+        	robot.constrainAccel(100); //drives straight and constrained
         }
         break;
-    case TURN90:
-    	
+
+    case WAITFORBUTTON:
+        if(buttonA.getSingleDebouncedRelease()){
+            robot_state = WALLFOLLOW; 
+            robot.Stop();
+            delay(1000);
+            robot.Turn(PI/2, 1);            
+        } else{
+            robot_state = WAITFORBUTTON; 
+            robot.Stop();
+        }
+    	break;
+    case WALLFOLLOW:
+        if (true){ //Ramp
+            robot_state = WALLFOLLOW10CM; 
+            robot.Stop();
+        } else {
+            robot_state = WALLFOLLOW; 
+            //robot.WallFollow(25cm); //distance
+        }
+        break;
+
+    case WALLFOLLOW10CM:
+        boolean done;
+        if (done){ //10CM travel
+            robot_state = IDLE; 
+            robot.Stop();
+        } else {
+            robot_state = WALLFOLLOW10CM; 
+            //done = robot.WallFollow10CM(25cm); //distance
+        }
+        break;
+    default:
+        robot_state = IDLE; 
+        robot.Stop();  
+        break;
     };
 }

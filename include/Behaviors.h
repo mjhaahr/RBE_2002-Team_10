@@ -5,7 +5,7 @@
 
 class Behaviors{
     private:
-    	enum ROBOT_STATE {IDLE, DRIVETOWALL, TURN90, WALLFOLLOW, WALLFOLLOW10CM}
+    	enum ROBOT_STATE {IDLE, DRIVETOWALL, WAITFORBUTTON, WALLFOLLOW, WALLFOLLOW10CM};
         ROBOT_STATE robot_state = IDLE; //initial state: IDLE
         
     public:
