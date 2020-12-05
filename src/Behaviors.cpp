@@ -50,7 +50,7 @@ void Behaviors::Run(void)
         if(buttonA.getSingleDebouncedRelease()){
             robot_state = WALLFOLLOW; 
             robot.Stop();
-            delay(1000);
+            delay(500);
             robot.Turn(PI/2, 1);            
         } else{
             robot_state = WAITFORBUTTON; 
