@@ -2,17 +2,20 @@
 #include "Encoders.h"
 #include "Speed_controller.h"
 #include "Position_estimation.h"
+#include "Wall_Follower.h"
 
 
 Romi32U4Motors motors;
 Encoder MagneticEncoder; 
 Position odometry;
+WallFollower wallF;
 
 float time_track = 0;
 
 void SpeedController::Init(void){
     MagneticEncoder.Init();
     odometry.Init();
+    wallF.Init();
 }
 
 void SpeedController::Run(float target_velocity_left, float target_velocity_right){
@@ -71,4 +74,34 @@ void SpeedController::constrainAccel(int targetSpeed){
 	int incVel = currVel + deltaV; //how much it can decrease in speed by
 	int vel = (targetSpeed > incVel) ? (incVel) : ((targetSpeed < decVel) ? (decVel) : (targetSpeed));
     motors.setEfforts(vel, vel);
+}
+
+/**
+ * Follow a wall with an offset distance.
+ * @param target_distance Target horizonal distance between robot and wall
+ */
+void SpeedController::WallFollow(float target_distance) {
+    int calculated_speed = wallF.Process(target_distance); // Calculate speed using wall follower controller. See implementation for speed constraints.
+
+    Run(50 + calculated_speed, 50 - calculated_speed); //TODO: add acceleration constraints?
+}
+
+/**
+ * Follow a wall with an offset distance, but only travel 10cm
+ * @param target_distance Target horizonal distance between robot and wall
+ * @return True if done.
+ */
+boolean SpeedController::WallFollow10CM(float target_distance) {
+    currentPos = odometry.ReadPose();
+    float target_dist = currentPos.X - 10.0; // Assuming the robot moves in the -X direction when this is called
+    float dist_error = target_dist - currentPos.X;
+    
+    do {
+        dist_error = target_dist - currentPos.X;
+        int calculated_speed = wallF.Process(target_distance); // Calculate speed using wall follower controller. See implementation for speed constraints.
+        Run(50 + calculated_speed, 50 - calculated_speed); //TODO: add acceleration constraints?
+    } while (dist_error < 0.005); // Tolerance of 5mm
+
+    Stop();
+    return 1;
 }

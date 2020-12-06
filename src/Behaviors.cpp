@@ -63,7 +63,7 @@ void Behaviors::Run(void)
             robot.Stop();
         } else {
             robot_state = WALLFOLLOW; 
-            //robot.WallFollow(25cm); //distance
+            robot.WallFollow(25); //distance
         }
         break;
 
@@ -74,7 +74,7 @@ void Behaviors::Run(void)
             robot.Stop();
         } else {
             robot_state = WALLFOLLOW10CM; 
-            //done = robot.WallFollow10CM(25cm); //distance
+            done = robot.WallFollow10CM(25); //distance
         }
         break;
     default:

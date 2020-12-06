@@ -21,6 +21,8 @@ class SpeedController{
         boolean Turn(float,int); //degrees, direction of rotation: 0->left, 1->right
         void constrainAccel(int); //acceleration constrain
         void Stop(void);
+        void WallFollow(float);
+        boolean WallFollow10CM(float);
 };
 
 #endif
