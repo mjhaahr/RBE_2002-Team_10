@@ -73,7 +73,7 @@ void SpeedController::constrainAccel(int targetSpeed){
     int decVel = currVel - deltaV; //how much it can increase in speed by
 	int incVel = currVel + deltaV; //how much it can decrease in speed by
 	int vel = (targetSpeed > incVel) ? (incVel) : ((targetSpeed < decVel) ? (decVel) : (targetSpeed));
-    motors.setEfforts(vel, vel);
+    Run(vel, vel);
 }
 
 /**

@@ -15,6 +15,6 @@ float WallFollower::Process(float target_distance) {
     E_distance = target_adjusted - SharpIR.ReadData(); //might need to flip terms, not sure how that will manifest
 
     float diff = E_distance - prev_e_distance;
-    float speed = constrain(E_distance * Kd + diff * Kp, -50, 50); // Constrain speed within +- 50mm/s
+    float speed = constrain(E_distance * Kd + diff * Kp, -65, 65); // Constrain speed within +- 65mm/s
     return speed;
 }

@@ -9,7 +9,7 @@ Romi32U4ButtonA buttonA;
 //motor-speed controller
 SpeedController robot;
 
-//Accelerometer
+//IMU
 IMU_sensor accel;
 
 void Behaviors::Init(void)
@@ -45,10 +45,18 @@ void Behaviors::Run(void)
             robot_state = IDLE; 
             robot.Stop();             
         } else if(accel.DetectCollision()){ //Collision
+            robot.Stop();
+
+            unsigned long targetTime = millis() + 1000; //back away from wall to make turning easier
+            while (targetTime > millis()){
+                robot.Run(-50, -50);
+            }
+
         	robot_state = WAITFORBUTTON; 
             robot.Stop();
         } else {
-        	robot.constrainAccel(100); //drives straight and constrained
+            accel.PrintAcceleration();
+        	robot.constrainAccel(150); //drives straight and constrained
         }
         break;
 
@@ -69,19 +77,14 @@ void Behaviors::Run(void)
             robot.Stop();
         } else {
             robot_state = WALLFOLLOW; 
+            accel.PrintAcceleration();
             robot.WallFollow(20); //distance
         }
         break;
 
     case WALLFOLLOW10CM:
-        boolean done;
-        if (done){ //10CM travel
-            robot_state = IDLE; 
-            robot.Stop();
-        } else {
-            robot_state = WALLFOLLOW10CM; 
-            done = robot.WallFollow10CM(20); //distance
-        }
+        robot.WallFollow10CM(20);
+        robot_state = IDLE; 
         break;
     default:
         robot_state = IDLE; 
