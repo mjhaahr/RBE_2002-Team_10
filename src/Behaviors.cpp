@@ -1,6 +1,7 @@
 #include <Romi32U4.h>
 #include "Behaviors.h"
 #include "Speed_controller.h"
+#include "IMU.h"
 
 //sensors
 Romi32U4ButtonA buttonA;
@@ -8,9 +9,13 @@ Romi32U4ButtonA buttonA;
 //motor-speed controller
 SpeedController robot;
 
+//Accelerometer
+IMU_sensor accel;
+
 void Behaviors::Init(void)
 {
     robot.Init();
+    accel.Init();
 }
 
 void Behaviors::Stop(void)
@@ -39,7 +44,7 @@ void Behaviors::Run(void)
         if(buttonA.getSingleDebouncedRelease()){
             robot_state = IDLE; 
             robot.Stop();             
-        } else if(true){ //Collision
+        } else if(accel.DetectCollision()){ //Collision
         	robot_state = WAITFORBUTTON; 
             robot.Stop();
         } else {
@@ -59,7 +64,7 @@ void Behaviors::Run(void)
         }
     	break;
     case WALLFOLLOW:
-        if (true){ //Ramp
+        if (accel.EndOfRamp()){ //Ramp
             robot_state = WALLFOLLOW10CM; 
             robot.Stop();
         } else {
