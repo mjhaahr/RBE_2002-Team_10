@@ -8,7 +8,7 @@ class IMU_sensor{
         int data[3] = {0};
         char report[120];
         const int threshold = 300; //collision threshold for 50-100mm/s (may need retesting)
-        const int crossover = -25; //ramp crossover point in y term gyro, as it hits the ground at the end of the ramp
+        const int crossover = -30; //ramp crossover point in y term gyro, as it hits the ground at the end of the ramp
         
     public:
         struct acceleration_data {

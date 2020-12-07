@@ -70,7 +70,7 @@ void Behaviors::Run(void)
         }
     	break;
     case WALLFOLLOW:
-        if (accel.EndOfRamp()){ //accel.EndOfRamp()){ //Ramp
+        if (accel.EndOfRamp()){ //Ramp
             robot_state = WALLFOLLOW10CM; 
             robot.Stop();
         } else {

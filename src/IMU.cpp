@@ -41,13 +41,13 @@ void IMU_sensor::Init(void)
 IMU_sensor::acceleration_data IMU_sensor::ReadAcceleration(void)
 {
     imu.read();
-    return {(med_x.Filter((int) (imu.a.x * 0.061))), (int) (med_y.Filter((int) (imu.a.y * 0.061))), (med_z.Filter((int) (imu.a.z * 0.061)))};
+    return {(med_x.Filter((int) (imu.a.x * 0.061))), (med_y.Filter((int) (imu.a.y * 0.061))), (med_z.Filter((int) (imu.a.z * 0.061)))};
 }
 
 IMU_sensor::acceleration_data IMU_sensor::ReadGyro(void)
 {
     imu.read();
-    return {(med_x.Filter((int) imu.dps.x)), (int) (med_y.Filter((int) imu.dps.y)), (med_z.Filter((int) imu.dps.z))};
+    return {(med_gx.Filter((int) imu.dps.x )), (med_gy.Filter((int) imu.dps.y)), (med_gz.Filter((int) imu.dps.z))};
 }
 
 void IMU_sensor::PrintAcceleration(void){
