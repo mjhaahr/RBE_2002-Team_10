@@ -20,6 +20,7 @@ void Behaviors::Stop(void)
 
 void Behaviors::Run(void)
 {
+    
     switch (robot_state)
     {
     case IDLE:
@@ -63,7 +64,7 @@ void Behaviors::Run(void)
             robot.Stop();
         } else {
             robot_state = WALLFOLLOW; 
-            robot.WallFollow(25); //distance
+            robot.WallFollow(20); //distance
         }
         break;
 
@@ -74,7 +75,7 @@ void Behaviors::Run(void)
             robot.Stop();
         } else {
             robot_state = WALLFOLLOW10CM; 
-            done = robot.WallFollow10CM(25); //distance
+            done = robot.WallFollow10CM(20); //distance
         }
         break;
     default:

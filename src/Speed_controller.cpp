@@ -83,7 +83,7 @@ void SpeedController::constrainAccel(int targetSpeed){
 void SpeedController::WallFollow(float target_distance) {
     int calculated_speed = wallF.Process(target_distance); // Calculate speed using wall follower controller. See implementation for speed constraints.
 
-    Run(50 + calculated_speed, 50 - calculated_speed); //TODO: add acceleration constraints?
+    Run(50 - calculated_speed, 50 + calculated_speed); //TODO: add acceleration constraints?, seems to work without
 }
 
 /**
@@ -92,15 +92,14 @@ void SpeedController::WallFollow(float target_distance) {
  * @return True if done.
  */
 boolean SpeedController::WallFollow10CM(float target_distance) {
+    odometry.Stop(); //zero position
     currentPos = odometry.ReadPose();
-    float target_dist = currentPos.X - 10.0; // Assuming the robot moves in the -X direction when this is called
-    float dist_error = target_dist - currentPos.X;
-    
+    float dist_error = 0.1;
     do {
-        dist_error = target_dist - currentPos.X;
-        int calculated_speed = wallF.Process(target_distance); // Calculate speed using wall follower controller. See implementation for speed constraints.
-        Run(50 + calculated_speed, 50 - calculated_speed); //TODO: add acceleration constraints?
-    } while (dist_error < 0.005); // Tolerance of 5mm
+        currentPos = odometry.ReadPose();
+        dist_error = 0.1 - currentPos.X;
+        WallFollow(target_distance);
+    } while (dist_error > 0.005); // Tolerance of 5mm
 
     Stop();
     return 1;

@@ -10,7 +10,7 @@ void WallFollower::Init(void) {
 }
 
 float WallFollower::Process(float target_distance) {
-    float target_adjusted = target_distance / cos(PI/4.0); // Pi/4 is 45*, the angle of the IR sensor on the robot.
+    float target_adjusted = target_distance / angleCompensation; // prevent repeated floating point math
     prev_e_distance = E_distance; //reset previous error
     E_distance = target_adjusted - SharpIR.ReadData(); //might need to flip terms, not sure how that will manifest
 
