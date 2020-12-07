@@ -5,15 +5,15 @@
 
 class MedianFilter{
     private:
-        float dataArray[5] = {0};
-        float medianArray[5] = {0};
+        int dataArray[5] = {0};
+        int medianArray[5] = {0};
         int pos = 0; //position of next data point to add (oldest data point)
         
         
     public:
         void Sort(int, int);
         void Init(void);
-        float Filter(float);
+        int Filter(int);
 };
 
 #endif

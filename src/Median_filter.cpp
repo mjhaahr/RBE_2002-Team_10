@@ -14,7 +14,7 @@ void MedianFilter::Sort(int index_a, int index_b)
     }
 }
 
-float MedianFilter::Filter(float measurement)
+int MedianFilter::Filter(int measurement)
 {
     dataArray[pos] = measurement;
     for(int i = 0; i < 5; i++){

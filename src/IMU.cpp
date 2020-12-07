@@ -32,7 +32,7 @@ void IMU_sensor::Init(void)
 IMU_sensor::acceleration_data IMU_sensor::ReadAcceleration(void)
 {
     imu.read();
-    return {(int) (med_x.Filter(imu.a.x) * 0.061), (int) (med_y.Filter(imu.a.y) * 0.061), (int) (med_z.Filter(imu.a.y) * 0.061)};
+    return {(med_x.Filter((int) (imu.a.x * 0.061))), (int) (med_y.Filter((int) (imu.a.y * 0.061))), (med_z.Filter((int) (imu.a.y * 0.061)))};
 }
 
 void IMU_sensor::PrintAcceleration(void)
