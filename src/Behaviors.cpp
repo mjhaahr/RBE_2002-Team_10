@@ -25,7 +25,6 @@ void Behaviors::Stop(void)
 
 void Behaviors::Run(void)
 {
-    
     switch (robot_state)
     {
     case IDLE:
@@ -47,7 +46,7 @@ void Behaviors::Run(void)
         } else if(accel.DetectCollision()){ //Collision
             robot.Stop();
 
-            unsigned long targetTime = millis() + 1000; //back away from wall to make turning easier
+            unsigned long targetTime = millis() + 1500; //back away from wall to make turning easier
             while (targetTime > millis()){
                 robot.Run(-50, -50);
             }
@@ -55,7 +54,6 @@ void Behaviors::Run(void)
         	robot_state = WAITFORBUTTON; 
             robot.Stop();
         } else {
-            accel.PrintAcceleration();
         	robot.constrainAccel(150); //drives straight and constrained
         }
         break;
@@ -72,12 +70,11 @@ void Behaviors::Run(void)
         }
     	break;
     case WALLFOLLOW:
-        if (accel.EndOfRamp()){ //Ramp
+        if (accel.EndOfRamp()){ //accel.EndOfRamp()){ //Ramp
             robot_state = WALLFOLLOW10CM; 
             robot.Stop();
         } else {
-            robot_state = WALLFOLLOW; 
-            accel.PrintAcceleration();
+            robot_state = WALLFOLLOW;
             robot.WallFollow(20); //distance
         }
         break;

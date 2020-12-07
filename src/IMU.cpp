@@ -10,6 +10,10 @@ MedianFilter med_x;
 MedianFilter med_y;
 MedianFilter med_z;
 
+MedianFilter med_gx;
+MedianFilter med_gy;
+MedianFilter med_gz;
+
 void IMU_sensor::Init(void)
 {
     Wire.begin();
@@ -22,11 +26,16 @@ void IMU_sensor::Init(void)
         }
     }
     imu.setFullScaleAcc(imu.ACC_FS2);
+	imu.setFullScaleGyro(imu.GYRO_FS245);
 	imu.enableDefault();
     
     med_x.Init();
     med_y.Init();
     med_z.Init();
+
+	med_gx.Init();
+    med_gy.Init();
+    med_gz.Init();
 }
 
 IMU_sensor::acceleration_data IMU_sensor::ReadAcceleration(void)
@@ -35,13 +44,25 @@ IMU_sensor::acceleration_data IMU_sensor::ReadAcceleration(void)
     return {(med_x.Filter((int) (imu.a.x * 0.061))), (int) (med_y.Filter((int) (imu.a.y * 0.061))), (med_z.Filter((int) (imu.a.z * 0.061)))};
 }
 
-void IMU_sensor::PrintAcceleration(void)
+IMU_sensor::acceleration_data IMU_sensor::ReadGyro(void)
 {
+    imu.read();
+    return {(med_x.Filter((int) imu.dps.x)), (int) (med_y.Filter((int) imu.dps.y)), (med_z.Filter((int) imu.dps.z))};
+}
+
+void IMU_sensor::PrintAcceleration(void){
     IMU_sensor::acceleration_data data = ReadAcceleration();
     snprintf_P(report, sizeof(report),
     PSTR("A: %10d %10d %10d"),
     data.X, data.Y, data.Z);
-    //imu.g.x, imu.g.y, imu.g.z);
+    Serial.println(report); 
+}
+
+void IMU_sensor::PrintGyro(void){
+    IMU_sensor::acceleration_data data = ReadGyro();
+    snprintf_P(report, sizeof(report),
+    PSTR("G: %10d %10d %10d"),
+    data.X, data.Y, data.Z);
     Serial.println(report); 
 }
 
@@ -55,6 +76,10 @@ boolean IMU_sensor::DetectCollision(void){
 }
 
 boolean IMU_sensor::EndOfRamp(void){
-	IMU_sensor::acceleration_data data = ReadAcceleration();
-	return 0; //currently not implemented
+	IMU_sensor::acceleration_data data = ReadGyro();
+	if (data.Y < crossover){
+		return 1;
+	} else {
+		return 0;
+	}
 }
