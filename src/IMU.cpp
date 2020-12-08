@@ -66,14 +66,6 @@ void IMU_sensor::PrintGyro(void){
     Serial.println(report); 
 }
 
-/*
-void IMU_sensor::gyroPositionUpdate(void){
-	IMU_sensor::acceleration_data data = ReadGyro();
-	float delta = data.Y * deltaT;
-	pitch += delta;
-}
-*/
-
 boolean IMU_sensor::DetectCollision(void){
 	IMU_sensor::acceleration_data data = ReadAcceleration();
 	if(abs(data.X) > threshold){ //front on collision only, only need to test X direction
@@ -90,12 +82,4 @@ boolean IMU_sensor::EndOfRamp(void){
 	} else {
 		return 0;
 	}
-	
-	/*
-	if (millis() > targetTime){
-		IMU_sensor::gyroPositionUpdate();
-		targetTime = millis() + 25;
-	}
-	
-	*/
 }
